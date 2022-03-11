@@ -73,10 +73,16 @@ public class App {
             }
 
             case 3: {
-                Global chars = new Global("Mornachy");
+                System.out.println("Nhap text: ");
+                text = scanner.nextLine(); 
+                
+                String key;
+                System.out.println("Nhap key: ");
+                key = scanner.nextLine();
 
-                playfairEncode("MONARCHY", "ANTOANBAOMATTHONGTIN");
-
+                playfairEncode(key, text);
+                System.out.println();
+                playfairDecode(key, text);
             }
         }
 
@@ -195,6 +201,7 @@ public class App {
 
     public static void playfairEncode(String key, String text) {
         Global chars = new Global(key);
+        System.out.print("Ket qua Encode: ");
 
         for (int i = 0; i < text.length(); i += 2) {
             if(text.charAt(i) == text.charAt(i + 1)) {
@@ -226,6 +233,53 @@ public class App {
                 else if (pos1[1] == pos2[1]) {
                     pos1[0] = (pos1[0] + 1) % 5;
                     pos2[0] = (pos2[0] + 1) % 5;
+                }
+                else {
+                    int temp = pos1[1];
+                    pos1[1] = pos2[1];
+                    pos2[1] = temp;
+                }
+                System.out.print(chars.Playfair[pos1[0]][pos1[1]]);
+                System.out.print(chars.Playfair[pos2[0]][pos2[1]]);
+            }
+        }
+    }
+
+    public static void playfairDecode(String key, String text) {
+        Global chars = new Global(key);
+        System.out.print("Ket qua Decode: ");
+        
+        for (int i = 0; i < text.length(); i += 2) {
+            if(text.charAt(i) == text.charAt(i + 1)) {
+                System.out.print(text.charAt(i) + "X");
+            }
+            else {
+                int[] pos1 = new int[2];
+                int[] pos2 = new int[2];
+                char firstChar = text.charAt(i), secondChar = text.charAt(i + 1);
+
+                for (int row = 0; row < 5; row++)
+                    for(int col = 0; col < 5; col++) {      
+                        if(chars.Playfair[row][col] == firstChar) {
+                            pos1[0] = row;
+                            pos1[1] = col; 
+                        }
+
+                        if(chars.Playfair[row][col] == secondChar) {
+                            pos2[0] = row;
+                            pos2[1] = col;
+                        }
+                    }
+                
+                // System.out.println(String.format("%d%d  %d%d", pos1[0], pos1[1], pos2[0], pos2[1]));
+                if (pos1[0] == pos2[0]) {
+
+                    pos1[1] = (pos1[1] - 1 + 5) % 5;
+                    pos2[1] = (pos2[1] - 1 + 5) % 5;
+                }
+                else if (pos1[1] == pos2[1]) {
+                    pos1[0] = (pos1[0] - 1 + 5) % 5;
+                    pos2[0] = (pos2[0] - 1 + 5) % 5;
                 }
                 else {
                     int temp = pos1[1];
